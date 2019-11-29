@@ -4,19 +4,19 @@ $progpath=dirname(__FILE__);
 for($x=0;$x<28;$x++){
 	$cmd='';
 	if(file_exists("/etc/nifd/cmd.shutdown")){
-		$cmd="/sbin/shutdown -h now";
+		$cmd="sudo /sbin/shutdown -h now";
 		unlink("/etc/nifd/cmd.shutdown");
 	}
 	elseif(file_exists("/etc/nifd/cmd.restart")){
-		$cmd="/sbin/shutdown -r now";
+		$cmd="sudo /sbin/shutdown -r now";
 		unlink("/etc/nifd/cmd.restart");
 	}
 	elseif(file_exists("/etc/nifd/cmd.reset")){
-		$cmd="/usr/bin/php /etc/nifd/reset.php";
+		$cmd="sudo /usr/bin/php /etc/nifd/reset.php";
 		unlink("/etc/nifd/cmd.reset");
 	}
 	elseif(file_exists("/etc/nifd/cmd.dnsmasq")){
-		$cmd="/usr/sbin/service dnsmasq restart";
+		$cmd="sudo /usr/sbin/service dnsmasq restart";
 		unlink("/etc/nifd/cmd.dnsmasq");
 	}
 	elseif(file_exists("/etc/nifd/cmd.test")){
@@ -25,11 +25,11 @@ for($x=0;$x<28;$x++){
 	}
 	elseif(file_exists("/etc/nifd/cmd.apache")){
 		unlink("/etc/nifd/cmd.apache");
-		$cmd="/usr/sbin/apachectl restart";
+		$cmd="sudo /usr/sbin/apachectl restart";
 	}
 	elseif(file_exists("/etc/nifd/cmd.wasql")){
 		unlink("/etc/nifd/cmd.wasql");
-		$cmd="cd /var/www/wasql && /usr/bin/git pull";
+		$cmd="cd /var/www/wasql && sudo /usr/bin/git pull";
 	}
 	elseif(file_exists("/etc/nifd/cmd.usb_mount") && file_exists('/etc/usb.json')){
 		$key=getFileContents("/etc/nifd/cmd.usb_mount");
@@ -40,25 +40,25 @@ for($x=0;$x<28;$x++){
 		if(!empty($usb[$key]) && !empty($usb[$key]['media_path']) && !empty($usb[$key]['uuid'])){
 			if(!is_dir($usb[$key]['media_path'])){
 				buildDir($usb[$key]['media_path'],0777);
-				$cmd="chown nifd:nifd {$usb[$key]['media_path']}";
+				$cmd="sudo chown nifd:nifd {$usb[$key]['media_path']}";
 				echo "running cmd: {$cmd}".PHP_EOL;
 				$ok=cmdResults($cmd);
 				echo printValue($ok);
 			}
 			switch(strtolower($usb[$key]['type'])){
 				case 'exfat':
-					$cmd="mount -t exfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
+					$cmd="sudo mount -t exfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
 				break;
 				case 'ntfs':
-					$cmd="mount -t ntfs-3g -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
+					$cmd="sudo mount -t ntfs-3g -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
 				break;
 				case 'vfat':
 				case 'fat16':
 				case 'fat32':
-					$cmd="sync && mount -t vfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
+					$cmd="sync && sudo mount -t vfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
 				break;
 				default:
-					$cmd="mount -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
+					$cmd="sudo mount -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
 				break;
 			}
 		}
@@ -72,7 +72,7 @@ for($x=0;$x<28;$x++){
 		unlink("/etc/nifd/cmd.usb_unmount");
 		$usb=json_decode(getFileContents('/etc/nifd/usb.json'),true);
 		if(!empty($usb[$key]) && !empty($usb[$key]['media_path']) && is_dir($usb[$key]['media_path']) && preg_match('/media/i',$usb[$key]['media_path'])){
-			$cmd="sync && umount {$usb[$key]['media_path']} && rm -fR {$usb[$key]['media_path']}";
+			$cmd="sync && sudo umount {$usb[$key]['media_path']} && rm -fR {$usb[$key]['media_path']}";
 		}
 		else{
 			echo "{$key} is missing".printValue($usb).PHP_EOL;
