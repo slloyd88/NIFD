@@ -21,7 +21,7 @@ if(!isCLI()){
 	logMessage("nifd/startup.php is a command line tool only.");
 	exit;
 }
-//sleep(4);
+sleep(5);
 global $CONFIG;
 $_SERVER['HTTP_HOST']='nifd.local';
 include_once("/var/www/wasql/php/config.php");
