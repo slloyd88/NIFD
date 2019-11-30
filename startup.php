@@ -21,7 +21,7 @@ if(!isCLI()){
 	logMessage("nifd/startup.php is a command line tool only.");
 	exit;
 }
-sleep(4);
+//sleep(4);
 global $CONFIG;
 $_SERVER['HTTP_HOST']='nifd.local';
 include_once("/var/www/wasql/php/config.php");
@@ -88,21 +88,25 @@ foreach($usb as $rec){
 	$out=cmdResults($cmd);
 	logMessage($cmd.PHP_EOL.printValue($out));
 }
+$cmd=cmdResults('ifconfig -s -a');
+$lines=preg_split('/[\r\n]+/',$cmd['stdout']);
+array_shift($lines);
+$nics=array();
+foreach($lines as $line){
+	list($nic,$junk)=preg_split('/\ /',trim($line));
+	if(trim($nic)=='lo'){continue;}
+	$nics[]=trim($nic);
+}
 global $ifconfig;
 $ifconfig=array();
-$opts=array(
-	'nic'=>'eth0',
-	'mac_address'=>getMacAddress('eth0'),
-	'ip_v4'=>getIPV4('eth0'),
-	'ip_v6'=>getIPV6('eth0')
-);
-if(!strlen($opts['ip_v4'])){
+foreach($nics as $nic){
 	$opts=array(
-		'nic'=>'wlan0',
-		'mac_address'=>getMacAddress('wlan0'),
-		'ip_v4'=>getIPV4('wlan0'),
-		'ip_v6'=>getIPV6('wlan0')
+		'nic'=>$nic,
+		'mac_address'=>getMacAddress($nic),
+		'ip_v4'=>getIPV4($nic),
+		'ip_v6'=>getIPV6($nic)
 	);
+	if(strlen($opts['ip_v4'])){break;}
 }
 //echo printValue($opts);exit;
 logMessage("NIC: {$opts['nic']}");
@@ -246,6 +250,7 @@ function logMessage($msg){
 }
 function updateCommandFile($ip){
 	$afile='/boot/cmdline.txt';
+	if(!file_exists($afile)){return;}
 	$lines=file($afile);
 	$xlines=array();
 	foreach($lines as $i=>$line){
@@ -305,17 +310,17 @@ function getMacAddress($device='eth0'){
 		$cmd=cmdResults('/sbin/ifconfig');
 		$ifconfig=preg_split('/[\r\n]+/',$cmd['stdout']);
 	}
+	//echo "getMacAddress".printValue($ifconfig);exit;
 	//echo printValue($lines);
 	$nic=0;
 	foreach($ifconfig as $line){
-    	if(preg_match('/^'.$device.'/is',$line)){
+    	if(preg_match('/^'.$device.'/is',trim($line))){
 			$nic=1;
 		}
 		if(preg_match('/^lo\:/is',$line)){
 			$nic=0;
 		}
 		if($nic==0){continue;}
-		//echo "{$line}\n";
 		if(preg_match('/ether(.+?)txqueuelen/i',$line,$m)){
 			return trim($m[1]);
 		}
@@ -333,7 +338,7 @@ function getIPV4($device='eth0'){
 	}
 	$nic=0;
 	foreach($ifconfig as $line){
-    	if(preg_match('/^'.$device.'/is',$line)){
+    	if(preg_match('/^'.$device.'/is',trim($line))){
 			$nic=1;
 		}
 		if(preg_match('/^lo\:/is',$line)){
