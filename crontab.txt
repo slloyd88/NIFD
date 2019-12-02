@@ -1,0 +1,9 @@
+#WaSQL cron
+* * * * * /var/www/wasql/php/cron.sh >/var/www/wasql/php/cron.log 2>&1
+#check for commands to run
+* * * * * php /etc/nifd/cmd.php >/etc/nifd/cmd.log 2>&1
+#move the dnsmasq log to the database
+* * * * * php /etc/nifd/dnsmasq_log2db.php >/etc/nifd/dnsmasq_log2db.log 2>&1
+#Check to make sure dnsmasq is running
+* * * * * php /etc/nifd/check.php >/etc/nifd/check.log 2>&1
+
