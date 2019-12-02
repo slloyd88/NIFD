@@ -28,6 +28,7 @@
    68  ls
    69  mysql -u root -p
    70  mysql -u root -pnifdpass
+   71  unzip /etc/nifd/nifd_db.zip
    71  mysql -u root -pnifdpass nifd </etc/nifd/nifd_db.sql 
    72  chown firefly /var/www/html/
    73  chmod 777 /var/www/wasql/php/temp
