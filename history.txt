@@ -1,0 +1,38 @@
+    3  apt update
+    4  apt upgrade -y
+    7  mysql -u root -p
+    8  cd /var/www/wasql/
+    9  cp sample.config.xml config.xml
+   11  chmod 755 *.pl *.sh sh/*.sh
+   12  chown firefly config.xml 
+   13  chown firefly /etc/rc.local 
+   15  ../wasql/dirsetup.sh 
+   17  mv index.html index_old.html 
+   19  a2enmod rewrite
+   20  apache2ctl restart
+   22  cd /var/www/wasql/
+   24  cp sample.htaccess .htaccess 
+   33  apt install php-xml 
+   35  apt install php-simplexml
+   38  chown firefly /etc/php/7.2/apache2/php.ini 
+   39  chown firefly /etc/php/7.2/cli/php.ini 
+   43  apt install php-mbstring
+   44  apt install php-curl php-mysqli
+   48  apt install php-zip 
+   54  mkdir /var/www/wasql/php/temp
+   55  chown 777 /var/www/wasql/php/temp
+   63  chown firefly /etc/apache2/apache2.conf 
+   64  apache2ctl restart
+   65  chown firefly /var/www/wasql/php/temp/
+   67  gunzip niftyns__2019-11-21_12-21-20.sql.gz 
+   68  ls
+   69  mysql -u root -p
+   70  mysql -u root -pnifdpass
+   71  mysql -u root -pnifdpass nifd </etc/nifd/nifd_db.sql 
+   72  chown firefly /var/www/html/
+   73  chmod 777 /var/www/wasql/php/temp
+   75  chown firefly /var/www/html/images
+   80  apt install dos2unix
+   81  apt install espeak
+   82  cp /etc/nifd/010_www-data-nopasswd /etc/sudoers.d/
+   89  
