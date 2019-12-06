@@ -71,18 +71,18 @@ foreach($usb as $rec){
 	}
 	switch(strtolower($rec['type'])){
 		case 'exfat':
-			$cmd="sync && mount -t exfat -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
+			$cmd="mount -t exfat -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
 		break;
 		case 'vfat':
 		case 'fat16':
 		case 'fat32':
-			$cmd="sync && mount -t vfat -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
+			$cmd="mount -t vfat -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
 		break;
 		case 'ntfs':
-			$cmd="sync && mount -t ntfs-3g -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
+			$cmd="mount -t ntfs-3g -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
 		break;
 		default:
-			$cmd="sync && mount -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
+			$cmd="mount -o rw,defaults --uuid='".$rec['uuid']."' {$rec['media_path']}";
 		break;
 	}
 	$out=cmdResults($cmd);

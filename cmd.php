@@ -55,7 +55,7 @@ for($x=0;$x<28;$x++){
 				case 'vfat':
 				case 'fat16':
 				case 'fat32':
-					$cmd="sync && sudo mount -t vfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
+					$cmd="sudo mount -t vfat -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
 				break;
 				default:
 					$cmd="sudo mount -o rw,defaults --uuid='".$usb[$key]['uuid']."' {$usb[$key]['media_path']}";
@@ -72,7 +72,7 @@ for($x=0;$x<28;$x++){
 		unlink("/etc/nifd/cmd.usb_unmount");
 		$usb=json_decode(getFileContents('/etc/nifd/usb.json'),true);
 		if(!empty($usb[$key]) && !empty($usb[$key]['media_path']) && is_dir($usb[$key]['media_path']) && preg_match('/media/i',$usb[$key]['media_path'])){
-			$cmd="sync && sudo umount {$usb[$key]['media_path']} && rm -fR {$usb[$key]['media_path']}";
+			$cmd="sudo umount {$usb[$key]['media_path']} && rm -fR {$usb[$key]['media_path']}";
 		}
 		else{
 			echo "{$key} is missing".printValue($usb).PHP_EOL;
